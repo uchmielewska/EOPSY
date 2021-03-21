@@ -4,14 +4,37 @@
 
 filename=`basename $0`
 
-#functions
+
+lower()
+{
+	newfilename=${filename tr a-z A-Z}
+	if [ $newfilename == $filename ]
+	then
+		if [ ! "$2" = -r ]
+		then
+			echo "The filename was already lowerized"
+		fi
+	else
+		mv $filename $newfilename
+	fi
+}
+
+upper()
+{
+	newfilename=${filename tr A-Z a-z}
+	if [ $newfilename == $filename ]
+	then
+		if [ ! "$2" = -r ]
+		then
+			echo "The filename was already uppercased"
+		fi
+	else
+		mv $filename $newfilename
+	fi
+}
 
 
-L
-
-
-
-#if user choses -h or there is no argument chosen: print help
+#-h or no argument: print help
 usage () {
 cat<<EOT
 
@@ -42,9 +65,37 @@ return
 }
 
 
-
-if [ -z "$1" ] || [ "$1" = "-h" ]
+#last argument
+if [ $# == 3 ]
 then
-	usage
-	exit 0
+	path=$3
+else
+	path=$2
 fi
+
+#test if the path exist
+if [ ! -d $path ] && [ ! -f $path ]
+then
+	echo "The path : $path does not exist"
+	exit
+fi
+
+
+
+
+case "$1" in
+	h | -z)
+		usage 
+		exit
+		;;
+	-l)
+		lower $path
+		exit
+		;;
+	-u)
+		upper $path
+		exit
+		;;
+esac
+
+
