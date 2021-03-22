@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #shell programing - task "modify" for EOPSY course at WUT
 #author: Urszula Chmielewska
 
@@ -7,29 +7,31 @@ filename=`basename $0`
 
 lower()
 {
-	newfilename=${filename tr a-z A-Z}
-	if [ $newfilename == $filename ]
+	name=$1
+	lname=${name,,}
+	if [ $lname == $name ]
 	then
 		if [ ! "$2" = -r ]
 		then
 			echo "The filename was already lowerized"
 		fi
 	else
-		mv $filename $newfilename
+		mv $name $lname
 	fi
 }
 
 upper()
 {
-	newfilename=${filename tr A-Z a-z}
-	if [ $newfilename == $filename ]
+	name=$1
+	uname=${name^^}
+	if [ $uename == $name ]
 	then
 		if [ ! "$2" = -r ]
 		then
 			echo "The filename was already uppercased"
 		fi
 	else
-		mv $filename $newfilename
+		mv $name $uname
 	fi
 }
 
@@ -37,20 +39,16 @@ upper()
 #-h or no argument: print help
 usage () {
 cat<<EOT
-
 $filename is a script which modifies file names. It can lowerize and uppercase file names or call sed command with the given sed pattern.
 Script can be used with the following syntax:
-
 	$filename [-r] [-l|-u] <dir/file names...>
   	$filename [-r] <sed pattern> <dir/file names...>
   	$filename [-h]
-
 options:
   	-r             turns on recursion
   	-l|-u          lowercase or uppercase
   	<sed pattern>  sed patter to modify the names (instead of lower/uppercasing)
   	-h             shows help
-
 $filename correct syntax examples:
   	$filename -l file1 file2
   	$filename -r -u directory
@@ -66,7 +64,7 @@ return
 
 
 #last argument
-if [ $# == 3 ]
+if [ $# = 3 ]
 then
 	path=$3
 else
@@ -97,5 +95,4 @@ case "$1" in
 		exit
 		;;
 esac
-
 
