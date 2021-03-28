@@ -4,33 +4,75 @@
 
 filename=`basename $0`
 
-#function to change name from low letters to uppercased letters
+#function to change name from uppercased letters to low letters 
+#it does not change the extensions of the file
 low()
 {
-	newname="$(echo "$1" | tr A-Z a-z)"
-	if test "$1" != "$newname"
+	oldname="$1"
+	newname="${oldname%.*}"
+	if test $newname == $oldname
 	then
-		mv "$1" "$newname"
+		newname="$(echo "$oldname" | tr A-Z a-z)"
+		if test "$oldname" != "$newname"
+			then
+		mv "$oldname" "$newname"
+		fi
+	else
+		newname="$(echo "$newname" | tr A-Z a-z)"
+		ext="${oldname##*.}"
+		joined=$newname.$ext
+		if test "$oldname" != "$joined"
+			then
+		mv "$oldname" "$joined"
+		fi
 	fi
 }
 
-#function to change name from uppercased letters to low letters 
+#function to change name from low letters to uppercased letters
+#it does not change the extensions of the file
 up()
 {
-	newname="$(echo "$1" | tr a-z A-Z)"
-	if test "$1" != "$newname"
+	oldname="$1"
+	newname="${oldname%.*}"
+	if test $newname == $oldname
 	then
-		mv "$1" "$newname"
+		newname="$(echo "$oldname" | tr a-z A-Z)"
+		if test "$oldname" != "$newname"
+			then
+		mv "$oldname" "$newname"
+		fi
+	else
+		newname="$(echo "$newname" | tr a-z A-Z)"
+		ext="${oldname##*.}"
+		joined=$newname.$ext
+		if test "$oldname" != "$joined"
+			then
+		mv "$oldname" "$joined"
+		fi
 	fi
 }
-
+	
 #function to change name using sed pattern
+#it does not change the extensions of the file
 sedCommand()
 {
-	sedPath=$(echo "$1" | sed "$2")
-	if test "$1" != "$sedPath"
+	oldname="$1"
+	newname="${oldname%.*}"
+	if test $newname == $oldname
 	then
-		mv "$1" "$sedPath"
+		newname="$(echo "$oldname" | sed "$2")"
+		if test "$oldname" != "$newname"
+			then
+		mv "$oldname" "$newname"
+		fi
+	else
+		newname="$(echo "$newname" | sed "$2")"
+		ext="${oldname##*.}"
+		joined=$newname.$ext
+		if test "$oldname" != "$joined"
+			then
+		mv "$oldname" "$joined"
+		fi
 	fi
 }
 
@@ -80,11 +122,7 @@ recurrenceSed()
 	do
 		if test -f "$el";
 		then
-			newname=$(echo "$el" | sed "$2")
-			if test "$el" != "$newname"
-			then
-	  			mv "$el" "$newname"
-	  		fi
+			sedCommand $el $2
 		fi
 		
 		if test -d "$el";
