@@ -14,16 +14,16 @@ low()
 	then
 		newname="$(echo "$oldname" | tr A-Z a-z)"
 		if test "$oldname" != "$newname"
-			then
-		mv "$oldname" "$newname"
+		then
+			mv "$oldname" "$newname"
 		fi
 	else
 		newname="$(echo "$newname" | tr A-Z a-z)"
 		ext="${oldname##*.}"
 		joined=$newname.$ext
 		if test "$oldname" != "$joined"
-			then
-		mv "$oldname" "$joined"
+		then
+			mv "$oldname" "$joined"
 		fi
 	fi
 }
@@ -38,16 +38,16 @@ up()
 	then
 		newname="$(echo "$oldname" | tr a-z A-Z)"
 		if test "$oldname" != "$newname"
-			then
-		mv "$oldname" "$newname"
+		then
+			mv "$oldname" "$newname"
 		fi
 	else
 		newname="$(echo "$newname" | tr a-z A-Z)"
 		ext="${oldname##*.}"
 		joined=$newname.$ext
 		if test "$oldname" != "$joined"
-			then
-		mv "$oldname" "$joined"
+		then
+			mv "$oldname" "$joined"
 		fi
 	fi
 }
@@ -136,7 +136,7 @@ recurrenceSed()
 #function which prints help if used enters -h or there is wrong calling of the script
 usage () 
 {
-cat<<EOT
+cat<<EOF
 $filename is a script which modifies file names. It can lowerize and uppercase file names or call sed command with the given sed pattern.
 Script can be used with the following syntax:
 	$filename [-r] [-l|-u] <dir/file names...>
@@ -156,7 +156,7 @@ $filename incorrect syntax examples:
   	$filename -d
   	$filename -u -l file
   	$filename -r -u
-EOT
+EOF
 return
 }
 
