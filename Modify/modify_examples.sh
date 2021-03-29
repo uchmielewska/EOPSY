@@ -59,8 +59,8 @@ echo "Press any key for continue testing"
 read pause
 
 echo "================================================ Test 4 ==============================================="
-echo "\nRunning command: ../modify -l CV.TXT"
-../modify.sh -l CV.TXT
+echo "\nRunning command: ../modify -l CV.txt"
+../modify.sh -l CV.txt
 
 echo "\n--------------------------------------Directory tree after test 4-------------------------------------"
 ls -R
