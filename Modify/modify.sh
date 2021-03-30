@@ -17,18 +17,18 @@ low()
 	fi
 	
 	oldname="$1"
-	newname="${oldname%.*}"
-	if test $newname == $oldname
+	newname="${oldname%.*}"					#removes suffix from the filename
+	if test $newname == $oldname				#case if the file did not have a suffix
 	then
 		newname="$(echo "$oldname" | tr A-Z a-z)"
 		if test "$oldname" != "$newname"
 		then
 			mv "$oldname" "$newname"
 		fi
-	else
+	else							#case if the file did have a suffix
 		newname="$(echo "$newname" | tr A-Z a-z)"
-		ext="${oldname##*.}"
-		joined=$newname.$ext
+		ext="${oldname##*.}"				#reads suffix from the old filename and saves to ext
+		joined=$newname.$ext				#joins lowercased file name with unchanged suffix
 		if test "$oldname" != "$joined"
 		then
 			mv "$oldname" "$joined"
@@ -49,18 +49,18 @@ up()
 	fi	
 	
 	oldname="$1"
-	newname="${oldname%.*}"
-	if test $newname == $oldname
+	newname="${oldname%.*}"					#removes suffix from the filename
+	if test $newname == $oldname				#case if the file did not have a suffix
 	then
 		newname="$(echo "$oldname" | tr a-z A-Z)"
 		if test "$oldname" != "$newname"
 		then
 			mv "$oldname" "$newname"
 		fi
-	else
+	else							#case if the file did have a suffix
 		newname="$(echo "$newname" | tr a-z A-Z)"
-		ext="${oldname##*.}"
-		joined=$newname.$ext
+		ext="${oldname##*.}"				#reads suffix from the old filename and saves to ext
+		joined=$newname.$ext				#joins uppercased file name with unchanged suffix
 		if test "$oldname" != "$joined"
 		then
 			mv "$oldname" "$joined"
@@ -80,19 +80,19 @@ sedCommand()
 		exit	
 	fi	
 	
-	oldname="$1"
-	newname="${oldname%.*}"
-	if test $newname == $oldname
+	oldname="$1"	
+	newname="${oldname%.*}"					#removes suffix from the filename
+	if test $newname == $oldname				#case if the file did not have a suffix
 	then
 		newname="$(echo "$oldname" | sed "$2")"
 		if test "$oldname" != "$newname"
 			then
 		mv "$oldname" "$newname"
-		fi
-	else
+		fi		
+	else							#case if the file did have a suffix
 		newname="$(echo "$newname" | sed "$2")"
-		ext="${oldname##*.}"
-		joined=$newname.$ext
+		ext="${oldname##*.}"				#reads suffix from the old filename and saves to ext
+		joined=$newname.$ext				#joins file name after sed transformation with unchanged suffix
 		if test "$oldname" != "$joined"
 			then
 		mv "$oldname" "$joined"
@@ -195,6 +195,8 @@ if [ ! -d $1 ] && [ ! -f $1 ]
 	fi
 }
 
+#function which helps to execute program for more than one file/ one folder
+#ends if program shifted through all command line arguments
 endOfShift()
 {
 	if test -z $1
@@ -373,18 +375,6 @@ done
 case "$1" in
 	-h | -z)
 		usage 
-		exit
-		;;
-	*/*/*/*) 	
-		sedArg=$1
-		shift
-		for el in $*
-		do	
-			checkForShift $el
-			checkPath $el
-			sedCommand $el $sedArg
-			shift
-		done
 		exit
 		;;
 	-* | *)
