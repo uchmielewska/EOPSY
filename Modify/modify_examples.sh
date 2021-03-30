@@ -8,6 +8,7 @@ mkdir documents
 mkdir study
 mkdir photos
 touch cv.txt
+touch cv2
 mkdir documents/Asia
 touch documents/Asia/les*son1
 touch documents/Asia/lesson2
@@ -29,8 +30,8 @@ ls -R
 
 echo "**************************************** Correct usage examples ************************************"
 echo "================================================ Test 1 ==============================================="
-echo "\nRunning command: ../modify -u -r documents"
-../modify.sh -u -r documents
+echo "\nRunning command: ../modify -u -r documents photos/camp"
+../modify.sh -u -r documents photos/camp
 
 echo "\n--------------------------------------Directory tree after test 1-------------------------------------"
 ls -R
@@ -49,8 +50,8 @@ echo "Press any key for continue testing"
 read pause
 
 echo "================================================ Test 3 ==============================================="
-echo "\nRunning command: ../modify -u cv.txt"
-../modify.sh -u cv.txt
+echo "\nRunning command: ../modify.sh -u cv.txt cv2"
+../modify.sh -u cv.txt cv2
 
 echo "\n--------------------------------------Directory tree after test 3-------------------------------------"
 ls -R
@@ -59,8 +60,8 @@ echo "Press any key for continue testing"
 read pause
 
 echo "================================================ Test 4 ==============================================="
-echo "\nRunning command: ../modify -l CV.txt"
-../modify.sh -l CV.txt
+echo "\nRunning command: ../modify 'y/l/Z/' -r study photos"
+../modify.sh 'y/l/Z/' -r study photos
 
 echo "\n--------------------------------------Directory tree after test 4-------------------------------------"
 ls -R
@@ -69,8 +70,8 @@ echo "Press any key for continue testing"
 read pause
 
 echo "================================================ Test 5 ==============================================="
-echo "\nRunning command: ../modify 'y/l/EOPSY/' -r study"
-../modify.sh 's/l/EOPSY/' -r study
+echo "\nRunning command: ../modify -l CV.txt"
+../modify.sh -l CV.txt
 
 echo "\n--------------------------------------Directory tree after test 5-------------------------------------"
 ls -R
@@ -113,9 +114,9 @@ echo "Press any key for continue testing"
 read pause
 
 echo "================================================ Test 3 ==============================================="
-echo "\nRunning command: ../modify.sh -u documents"
+echo "\nRunning command: ../modify.sh -u documents cv.txt"
 echo ""
-../modify.sh -u documents
+../modify.sh -u documents cv.txt
 
 echo ""
 echo "Press any key for continue testing"
