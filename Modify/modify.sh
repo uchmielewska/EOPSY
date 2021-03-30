@@ -8,6 +8,14 @@ filename=`basename $0`
 #it does not change the extensions of the file
 low()
 {
+	#test if path given by a user is file
+	if test -d "$1"
+	then
+		echo "Option unavailable"
+		usage
+		exit	
+	fi
+	
 	oldname="$1"
 	newname="${oldname%.*}"
 	if test $newname == $oldname
@@ -32,6 +40,14 @@ low()
 #it does not change the extensions of the file
 up()
 {
+	#test if path given by a user is file
+	if test -d "$1"
+	then
+		echo "Option unavailable"
+		usage
+		exit	
+	fi	
+	
 	oldname="$1"
 	newname="${oldname%.*}"
 	if test $newname == $oldname
@@ -56,6 +72,14 @@ up()
 #it does not change the extensions of the file
 sedCommand()
 {
+	#test if path given by a user is file
+	if test -d "$1"
+	then
+		echo "Option unavailable"
+		usage
+		exit	
+	fi	
+	
 	oldname="$1"
 	newname="${oldname%.*}"
 	if test $newname == $oldname
@@ -148,7 +172,7 @@ options:
   	<sed pattern>  sed patter to modify the names (instead of lower/uppercasing)
   	-h             shows help
 $filename correct syntax examples:
-  	$filename -l file
+  	$filename -u file
   	$filename -r -u directory
   	$filename 's/x/Y/' bla.txt
   	
@@ -160,42 +184,68 @@ EOF
 return
 }
 
-
-#set last argument as path
-if [ $# == 3 ]
-then
-	path=$3
-else
-	path=$2
-fi
-
 #test if the path exist
-if [ ! -d $path ] && [ ! -f $path ]
-then
-	echo "The path : $path does not exist"
-	usage
-	exit
-fi
+checkPath()
+{
+if [ ! -d $1 ] && [ ! -f $1 ]
+	then
+		echo "Option unavailable"
+		usage
+		exit
+	fi
+}
 
+endOfShift()
+{
+	if test -z $1
+	then
+		exit
+	fi
+}
+
+iteration=0
 
 #run script using reccurence
 for argument in $*
 do
 	case $argument in
-		-r)
+		-r)	
+			shift
 			for argument2 in $*
 			do
 				case $argument2 in
-				-l)
-					recurrenceLow $path
+				-l)			
+					shift			
+					for el in $*
+					do	
+						iteration=1
+						endOfShift $el
+						checkPath $el
+						recurrenceLow $el
+						shift 
+					done
 					exit
 					;;
-				-u)
-					recurrenceUp $path
+				 -u)	
+					shift
+					for el in $*
+					do	
+						endOfShift $el
+						checkPath $el
+						recurrenceUp $el
+						shift
+					done
 					exit
 					;;
 				*/*/*/*)
-					recurrenceSed $path $argument2
+					shift
+					for el in $*
+					do	
+						endOfShift $el
+						checkPath $el
+						recurrenceSed $el $argument2
+						shift
+					done
 					exit
 					;;
 				*)
@@ -207,23 +257,117 @@ do
 			done
 			;;
 		-rl | -lr)
-			recurrenceLow $path
-			exit
-			;;
+				shift
+				for el in $*
+				do	
+					endOfShift $el
+					checkPath $el
+					recurrenceLow $el
+					shift 
+				done
+				exit
+				;;
 		-ru | -ur)
-			recurrenceUp $path
-			exit
+				shift
+				for el in $*
+				do	
+					endOfShift $el
+					checkPath $el
+					recurrenceUp $el
+					shift
+				done
+				exit
+				;;
+		-l)
+			shift
+			for argument2 in $*
+			do
+				case $argument2 in
+				-r)			
+					shift			
+					for el in $*
+					do	
+						iteration=1
+						endOfShift $el
+						checkPath $el
+						recurrenceLow $el
+						shift 
+					done
+					exit
+					;;
+				*)
+					for el in $*
+					do	
+						endOfShift $el
+						checkPath $el
+						low $el
+					shift
+					done
+					exit
+					;;
+				esac
+			done
+			;;
+		-u)
+			shift
+			for argument2 in $*
+			do
+				case $argument2 in
+				-r)	
+					shift
+					for el in $*
+					do	
+						endOfShift $el
+						checkPath $el
+						recurrenceUp $el
+						shift
+					done
+					exit
+					;;
+				*)
+					for el in $*
+					do	
+						endOfShift $el
+						checkPath $el
+						up $el
+					shift
+					done
+					exit
+					;;
+				esac
+			done
+			;;
+		*/*/*/*)
+			shift
+			for argument2 in $*
+			do	
+				case $argument2 in
+				-r)
+					shift
+					for el in $*
+					do	
+						endOfShift $el
+						checkPath $el
+						recurrenceSed $el $argument
+						shift
+					done
+					exit
+					;;
+				*)
+					for el in $*
+					do	
+						endOfShift $el
+						checkPath $el
+						sedCommand $el $argument
+					shift
+					done
+					exit
+					;;
+				esac
+			done
 			;;
 	esac
 done
-
-#test if path given by a user is file
-if test -d "$path"
-	then
-		echo "Option unavailable"
-		usage
-		exit	
-	fi
 	
 #all other cases than recurrence
 case "$1" in
@@ -231,17 +375,16 @@ case "$1" in
 		usage 
 		exit
 		;;
-	-l)
-		low $path
-		exit
-		;;
-	-u)
-		up $path
-		exit
-		;;
 	*/*/*/*) 	
 		sedArg=$1
-		sedCommand $path $sedArg
+		shift
+		for el in $*
+		do	
+			checkForShift $el
+			checkPath $el
+			sedCommand $el $sedArg
+			shift
+		done
 		exit
 		;;
 	-* | *)
