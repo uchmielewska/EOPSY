@@ -1,4 +1,5 @@
 #define _POSIX_SOURCE
+#define _POSIX_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -23,7 +24,7 @@ void term_child(int);				//func. information about terminating child
 bool keyboard_interrupt = false;		//variable to notify about keyboard interrupt
 #endif
 
-int main () {
+int main() {
 	
 	int i;					//current child process counter
 	int child_terminations = 0;		//children processes counter
@@ -45,7 +46,7 @@ int main () {
 		
 		#ifdef WITH_SIGNALS
 		if(keyboard_interrupt){
-			printf("parent[%d]: keyboard interrupt during child process detected. Sending SIGTERM signal to all already created children...\n",getpid());
+			printf("parent[%d]: sending SIGTERM signal to all already created children...\n",getpid());
 			kill_children(i, children_ids);
 			break;
 		}
