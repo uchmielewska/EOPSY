@@ -113,7 +113,11 @@ const char** assign_files(int argc, char** argv, bool mflag)
 void copy_read_write(int fd_from, int fd_to)					
 {
 	struct stat stat_from;							//definition of a struct which will store info about a file
-	fstat(fd_from, &stat_from);						//fstat() now in stat_from there is stored information about fd_from file
+	if(fstat(fd_from, &stat_from) == -1)						//fstat() now in stat_from there is stored information about fd_from file
+	{
+		perror("Error in loading source file mode\n");
+		exit(1);
+	}
 	char buffer[stat_from.st_size];					//buffer has size of the source file in bytes
 	
 	int read_file, write_file;
