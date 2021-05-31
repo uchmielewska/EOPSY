@@ -132,16 +132,41 @@ void copy_read_write(int fd_from, int fd_to)
 void copy_mmap(int fd_from, int fd_to)
 {
 	struct stat stat_from;							//definition of a struct which will store info about a file
-	fstat(fd_from, &stat_from);						//fstat() now in stat_from there is stored information about fd_from file
+	if(fstat(fd_from, &stat_from) == -1)						//fstat() now in stat_from there is stored information about fd_from file
+	{
+		perror("Error in loading source file mode\n");
+		exit(1);
+	}
 	
 	char* buffer_from;
 	char* buffer_to;
 	
 	buffer_from = mmap(NULL, stat_from.st_size, PROT_READ, MAP_SHARED, fd_from, 0);		//mapping source file
-	buffer_to =  mmap(NULL, stat_from.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_to, 0);	//mapping destination file
+	if(buffer_from == (void *) -1)
+	{
+		perror("Error in map memory source\n");
+		exit(1);
+	}
 	
-	ftruncate(fd_to, stat_from.st_size);								//resize destination file to it's new size
+	buffer_to =  mmap(NULL, stat_from.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_to, 0);	//mapping destination file
+	if(buffer_to == (void *) -1)
+	{
+		perror("Error in map memory destination\n");
+		exit(1);
+	}
+	
+	if(ftruncate(fd_to, stat_from.st_size) == -1)							//resize destination file to it's new size
+	{
+		perror("Error in changing destination file\n");
+		exit(1);
+	}								
+	
 	buffer_to = memcpy(buffer_to, buffer_from, stat_from.st_size);				//resize destination file buffer to new destination file size
+	if(buffer_to == (void *) -1)
+	{
+		perror("Error copying memory\n");
+		exit(1);
+	}
 	
 	munmap(buffer_from, stat_from.st_size);							//delete mapping from the specified address range
 	munmap(buffer_to, stat_from.st_size);								//delete mapping from the specified address range
