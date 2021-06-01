@@ -122,9 +122,9 @@ void copy_read_write(int fd_from, int fd_to)
 	
 	int read_file, write_file;
 	
-	while((read_file = read(fd_from, buffer, stat_from.st_size)) > 0)	//reading byte by byte from the source file
+	while((read_file = read(fd_from, buffer, stat_from.st_size)) > 0)	//reading data from the source file
 	{
-		write_file = write(fd_to, buffer, stat_from.st_size);		//writing byte by byte to the destination file
+		write_file = write(fd_to, buffer, stat_from.st_size);		//writing data to the destination file
 		if(write_file <= 0)
 		{
 			perror("Error in writting to the file\n");
